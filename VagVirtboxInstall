@@ -1,0 +1,14 @@
+## VirtualBox install
+$ echo "deb http://download.virtualbox.org/virtualbox/debian xenial contrib" | sudo tee --append /etc/apt/sources.list
+$ wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
+$ wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
+$ apt-get update
+$ apt-get install virtualbox
+### Install the dkms package to ensure that the VirtualBox host kernel modules (vboxdrv, vboxnetflt and vboxnetadp) are properly updated if the linux kernel version changes during the next apt-get upgrade
+$ apt-get install dkms
+
+## Vagrant install
+### https://www.vagrantup.com/downloads.html
+$ wget https://releases.hashicorp.com/vagrant/1.9.1/vagrant_1.9.1_x86_64.deb
+$ sudo dpkg -i vagrant_1.9.1_x86_64.deb
+
