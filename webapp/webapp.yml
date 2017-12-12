@@ -1,0 +1,43 @@
+---
+
+- hosts: all
+  become: yes
+  become_method: sudo
+  
+  tasks:
+   - name: Download the Go tar 
+     get_url:
+       url: https://storage.googleapis.com/golang/go1.9.2.linux-amd64.tar.gz
+       dest: /usr/local/src
+
+   - name: Extract the Go tar 
+     unarchive:
+       src: /usr/local/src/go1.9.2.linux-amd64.tar.gz
+       dest: /usr/local
+
+   - name: create a directory 
+     file:
+     path: /opt/blueprint
+     state: directory
+     mode: 0755
+
+   - name: Environment variable
+     command: echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile ; echo "export GOROOT="/usr/local/go"" >> /etc/profile ; echo "export GOPATH="/opt/blueprint"" >> /etc/profile
+     command: source /etc/profile
+
+   - name: Download blueprint code
+     command: /usr/local/go/bin/go get github.com/blue-jay/blueprint
+     command: /usr/local/go/bin/go get github.com/blue-jay/jay
+
+   - name: configure env.json
+     copy: 
+      src: /opt/blueprint/src/github.com/blue-jay/blueprint/env.json.example
+      dest: /opt/blueprint/src/github.com/blue-jay/blueprint/env.json
+     template:
+      src: env.json.j2
+      dest: /opt/blueprint/src/github.com/blue-jay/blueprint/env.json
+
+   - name: Run the application
+     command: /opt/gocode/bin/jay migrate:mysql all
+     command: /usr/local/bin/go /opt/blueprint/src/github.com/blue-jay/blueprint/blueprint.go 
+   
