@@ -4,6 +4,9 @@
   become: yes
   become_method: sudo
   
+  environment: 
+    JAYCONFIG: /opt/blueprint/go/src/github.com/blue-jay/blueprint/env.json
+
   tasks:
    - name: Download the Go tar 
      get_url:
@@ -14,30 +17,46 @@
      unarchive:
        src: /usr/local/src/go1.9.2.linux-amd64.tar.gz
        dest: /usr/local
+       copy: no
 
    - name: create a directory 
      file:
-     path: /opt/blueprint
-     state: directory
-     mode: 0755
+      path: /opt/blueprint
+      state: directory
+      mode: 0755
 
    - name: Environment variable
-     command: echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile ; echo "export GOROOT="/usr/local/go"" >> /etc/profile ; echo "export GOPATH="/opt/blueprint"" >> /etc/profile
-     command: source /etc/profile
+     shell: echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile ; echo "export GOROOT="/usr/local/go/bin"" >> /etc/profile ; echo "export GOPATH="/opt/blueprint"" >> /etc/profile
+
+#   - name: Source the profile
+#     raw: source /etc/profile
 
    - name: Download blueprint code
-     command: /usr/local/go/bin/go get github.com/blue-jay/blueprint
-     command: /usr/local/go/bin/go get github.com/blue-jay/jay
+     shell: /usr/local/go/bin/go get github.com/blue-jay/blueprint
 
-   - name: configure env.json
+   - name: Download jay code
+     shell: /usr/local/go/bin/go get github.com/blue-jay/jay
+
+   - name: Remove old go webapp
+     command: rm -rf /opt/blueprint/go
+   
+   - name: copying to blueprint
+     command: mv /root/go /opt/blueprint    
+
+   - name: configure envjson
      copy: 
-      src: /opt/blueprint/src/github.com/blue-jay/blueprint/env.json.example
-      dest: /opt/blueprint/src/github.com/blue-jay/blueprint/env.json
+      src: /opt/blueprint/go/src/github.com/blue-jay/blueprint/env.json.example
+      dest: /opt/blueprint/go/src/github.com/blue-jay/blueprint/env.json
+      remote_src: yes
+
+   - name:  Jinja template for envjson
      template:
       src: env.json.j2
-      dest: /opt/blueprint/src/github.com/blue-jay/blueprint/env.json
-
+      dest: /opt/blueprint/go/src/github.com/blue-jay/blueprint/env.json
+  
+   - name: setting env variable for jay
+     shell: echo "export JAYCONFIG=/opt/blueprint/go/src/github.com/blue-jay/blueprint/env.json" >> /etc/profile
+    
    - name: Run the application
-     command: /opt/gocode/bin/jay migrate:mysql all
-     command: /usr/local/bin/go /opt/blueprint/src/github.com/blue-jay/blueprint/blueprint.go 
+     shell: /opt/blueprint/go/bin/jay migrate:mysql all; /usr/local/go/bin/go /opt/blueprint/go/src/github.com/blue-jay/blueprint/blueprint.go 
    
