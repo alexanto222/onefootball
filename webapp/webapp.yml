@@ -26,7 +26,7 @@
       mode: 0755
 
    - name: Environment variable
-     shell: echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile ; echo "export GOROOT="/usr/local/go/bin"" >> /etc/profile ; echo "export GOPATH="/opt/blueprint"" >> /etc/profile
+     shell: echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile ; echo "export GOROOT="/usr/local/go"" >> /etc/profile ; echo "export GOPATH="/opt/blueprint/go"" >> /etc/profile
 
 #   - name: Source the profile
 #     raw: source /etc/profile
@@ -58,5 +58,5 @@
      shell: echo "export JAYCONFIG=/opt/blueprint/go/src/github.com/blue-jay/blueprint/env.json" >> /etc/profile
     
    - name: Run the application
-     shell: /opt/blueprint/go/bin/jay migrate:mysql all; /usr/local/go/bin/go /opt/blueprint/go/src/github.com/blue-jay/blueprint/blueprint.go 
+     shell: /opt/blueprint/go/bin/jay migrate:mysql all; /usr/local/go/bin/go run /opt/blueprint/go/src/github.com/blue-jay/blueprint/blueprint.go 
    
