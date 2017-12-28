@@ -1,60 +1,62 @@
 ---
-- name: update the key
-  shell: wget -q https://sensu.global.ssl.fastly.net/apt/pubkey.gpg -O- | sudo apt-key add - ; echo "deb https://sensu.global.ssl.fastly.net/apt trusty main" > /etc/apt/sources.list.d/sensu.list
 
-#- name: configure the repo
-#  apt_repository:
-#   repo: deb https://sensu.global.ssl.fastly.net/apt trusty main
-#   state: present
-#  shell: echo "deb https://sensu.global.ssl.fastly.net/apt trusty main" > /etc/apt/sources.list.d/sensu.list
+- hosts: all
+  become: yes
+  become_method: sudo
+ 
+  tasks:
+   - name: update the key
+     shell: wget -q https://sensu.global.ssl.fastly.net/apt/pubkey.gpg -O- | sudo apt-key add - ; echo "deb https://sensu.global.ssl.fastly.net/apt trusty main" > /etc/apt/sources.list.d/sensu.list
 
-- name: Run the equivalent of "apt-get update"
-  apt:
-    update_cache: yes
+   - name: Run the equivalent of "apt-get update"
+     apt:
+       update_cache: yes
 
-    remote_src: yes
+   - name: Install sensu and uchiwa
+     apt: name={{ item }} state=installed update_cache=yes
+     with_items:
+       - sensu
+       - uchiwa
 
-- name: Install sensu and uchiwa
-  apt: name={{ item }} state=installed update_cache=yes
-  with_items:
-   - sensu
-   - uchiwa
+   - name: Key and Repo setup
+     shell: curl -s http://www.rabbitmq.com/rabbitmq-signing-key-public.asc | apt-key add - ; echo "deb http://www.rabbitmq.com/debian/ testing main" > /etc/apt/sources.list.d/rabbitmq.list;curl -s http://repos.sensuapp.org/apt/pubkey.gpg | apt-key add - ;echo "deb http://repos.sensuapp.org/apt sensu main" > /etc/apt/sources.list.d/sensu.list ; echo "deb http://packages.elasticsearch.org/elasticsearch/1.0/debian stable main" > /etc/apt/sources.list.d/elasticsearch.list
 
-- name: Key and Repo setup
-  shell: curl -s http://www.rabbitmq.com/rabbitmq-signing-key-public.asc | apt-key add - ; echo "deb http://www.rabbitmq.com/debian/ testing main" > /etc/apt/sources.list.d/rabbitmq.list;curl -s http://repos.sensuapp.org/apt/pubkey.gpg | apt-key add - ;echo "deb http://repos.sensuapp.org/apt sensu main" > /etc/apt/sources.list.d/sensu.list ; echo "deb http://packages.elasticsearch.org/elasticsearch/1.0/debian stable main" > /etc/apt/sources.list.d/elasticsearch.list
+   - name: Run the equivalent of "apt-get update"
+     apt:
+       update_cache: yes
 
-- name: Install erlang-nox,rabbitmq-server,
-  apt: name="{{ item }}" state:installed update_cache=yes
-  with_items:
-   - erlang-nox
-   - rabbitmq-server
-   - redis-server
+   - name: Install erlang-nox,rabbitmq-server,
+     apt: name={{ item }} state=installed update_cache=yes
+     with_items:
+      - erlang-nox
+      - rabbitmq-server
+      - redis-server
 
-- name: configure rabbitmq
-  shell: rabbitmqctl add_vhost /sensu ; rabbitmqctl add_user sensu monitor ; rabbitmqctl set_permissions -p /sensu sensu ".*" ".*" ".*" ;update-rc.d sensu-server defaults; update-rc.d sensu-client defaults; update-rc.d sensu-api defaults; update-rc.d uchiwa defaults
+   - name: configure rabbitmq
+     shell: rabbitmqctl add_vhost /sensu ; rabbitmqctl add_user sensu monitor ; rabbitmqctl set_permissions -p /sensu sensu ".*" ".*" ".*" ;update-rc.d sensu-server defaults; update-rc.d sensu-client defaults; update-rc.d sensu-api defaults; update-rc.d uchiwa defaults
 
-- name: copy the config files
-  copy:
-  src: "{{ item }}"
-  dest: /etc/sensu/conf.d/"{{ item }}"
-  remote_src: yes   
-  with_items:
-   - api.json
-   - client.json
-   - check_disk_usage.json
-   - client.json
-   - load_check.json
-   - memory_checks.json
-   - transport.json
-   - redis.json
+   - name: copy the config files
+     copy:
+      src: "{{ item }}"
+      dest: /etc/sensu/conf.d/{{ item }}
+      remote_src: yes   
+     with_items:
+       - api.json
+       - client.json
+       - check_disk_usage.json
+       - client.json
+       - load_check.json
+       - memory_checks.json
+       - transport.json
+       - redis.json
 
-- name: Install the checks
-  shell: /usr/bin/sensu-install -p disk-checks ; /usr/bin/sensu-install -p memory-checks ; /usr/bin/sensu-install -p load-checks
+   - name: Install the checks
+     shell: /usr/bin/sensu-install -p disk-checks ; /usr/bin/sensu-install -p memory-checks ; /usr/bin/sensu-install -p load-checks
 
-- name: start the services
-  service: name={{ item }} state=start
-  with_items:
-   - sensu-server
-   - sensu-client
-   - sensu-api
-   - uchiwa
+   - name: start the services
+     service: name={{ item }} state=start
+     with_items:
+       - sensu-server
+       - sensu-client
+       - sensu-api
+       - uchiwa
