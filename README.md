@@ -28,6 +28,8 @@ UCHIWA dashboard for monitoring eg: http://<IPaddress>:3000
 Blue print webapp http://localhost(IP)
 
 
+
+
 Yet to fix:
 
 Maually installed python in all the ec2
