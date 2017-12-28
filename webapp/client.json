@@ -1,0 +1,17 @@
+{
+  "client": {
+    "name": "webapp",
+    "address": "127.0.0.1",
+    "environment": "development",
+    "subscriptions": [
+      "dev",
+      "url"
+    ],
+    "url": {
+    },   
+    "socket": {
+      "bind": "127.0.0.1",
+      "port": 3030
+    }
+  }
+}
