@@ -12,7 +12,13 @@ $ apt-get install dkms
 $ wget https://releases.hashicorp.com/vagrant/1.9.1/vagrant_1.9.1_x86_64.deb
 $ sudo dpkg -i vagrant_1.9.1_x86_64.deb
 
+For aws
 wget https://releases.hashicorp.com/vagrant/2.0.1/vagrant_2.0.1_x86_64.deb
-
 sudo dpkg -i vagrant_2.0.1_x86_64.deb
+vagrant plugin install vagrant-aws
 
+to fix the gem error run the below pkgs
+
+  sudo apt-get install build-essential libxslt-dev libxml2-dev zlib1g-dev ruby-dev vagrant -y
+    sudo gem install ruby-debug19 -- --with-ruby-include=$rvm_path/src/ruby-1.9.2-head/
+    vagrant plugin install vagrant-aws
