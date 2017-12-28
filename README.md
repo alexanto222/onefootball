@@ -7,7 +7,7 @@ Prerequisites:
 
 - Vagrant - Provisioner
 - Ansible - Configuration Management 
-- AWS  - Ec2 instances (Python should be pre installed in all the insantaces anisble works on python)
+- AWS  - Ec2 instances (Python should be pre installed in all the insantaces ansible works on python)
 - sensu - Monitoring
 - Mysql - DB
 - Gowebapp - Application
