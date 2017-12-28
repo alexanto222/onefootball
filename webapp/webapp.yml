@@ -66,3 +66,40 @@
    
    - name: Run the application
      shell: export JAYCONFIG=/opt/blueprint/go/src/github.com/blue-jay/blueprint/env.json; /opt/blueprint/go/bin/jay migrate:mysql all
+     
+   - name: update the key sensu
+     shell: wget -q https://sensu.global.ssl.fastly.net/apt/pubkey.gpg -O- | sudo apt-key add -
+     
+   - name: configure the sensu repo
+#  apt_repository:
+#   repo: deb https://sensu.global.ssl.fastly.net/apt trusty main
+#   state: present
+     shell: echo "deb https://sensu.global.ssl.fastly.net/apt trusty main" > /etc/apt/sources.list.d/sensu.list
+     
+   - name: Run the equivalent of "apt-get update"
+     apt:
+       update_cache: yes
+
+   - name: Install sensu-client
+     apt: name= sensu state=installed update_cache=yes
+
+   - name: copy the config json files
+     template:
+       src: {{ item }}
+       dest: /etc/sensu/conf.d/{{ item }}
+       remote_src: yes
+     with_items:
+       - web_check.json
+       - client.json
+
+   - name: copy the rabbitmq config
+     template:
+      src: config.json
+      dest: /etc/sensu/config.json
+
+   - name: Install the checks
+     shell: /usr/bin/sensu-install -p disk-checks ; /usr/bin/sensu-install -p memory-checks ; /usr/bin/sensu-install -p load-checks
+
+   - name: start the services
+     service: name=sensu-client state=started
+                                               
