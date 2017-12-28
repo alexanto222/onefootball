@@ -24,7 +24,8 @@
   shell: curl -s http://www.rabbitmq.com/rabbitmq-signing-key-public.asc | apt-key add - ; echo "deb http://www.rabbitmq.com/debian/ testing main" > /etc/apt/sources.list.d/rabbitmq.list;curl -s http://repos.sensuapp.org/apt/pubkey.gpg | apt-key add - ;echo "deb http://repos.sensuapp.org/apt sensu main" > /etc/apt/sources.list.d/sensu.list ; echo "deb http://packages.elasticsearch.org/elasticsearch/1.0/debian stable main" > /etc/apt/sources.list.d/elasticsearch.list
 
 - name: Install erlang-nox,rabbitmq-server,
-  apt: name={{ item }} state:installed update_cache=yes
+  apt: name="{{ item }}" state:installed update_cache=yes
+  with_items:
    - erlang-nox
    - rabbitmq-server
    - redis-server
@@ -34,8 +35,8 @@
 
 - name: copy the config files
   copy:
-  src: {{ item }}
-  dest: /etc/sensu/conf.d/{{ item }}
+  src: "{{ item }}"
+  dest: /etc/sensu/conf.d/"{{ item }}"
   remote_src: yes   
   with_items:
    - api.json
