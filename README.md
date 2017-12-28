@@ -6,10 +6,15 @@ Webapp with MySQL DB and monitored by sensu
 Prerequisites:
 
 Vagrant - Provisioner
+
 Ansible - Configuration Management 
+
 AWS  - Ec2 instances (Python should be pre installed in all the insantaces anisble works on python)
+
 sensu - Monitoring
+
 Mysql - DB
+
 Gowebapp - Application
 
 Clone the repository 
@@ -26,4 +31,5 @@ Blue print webapp http://localhost(IP)
 Yet to fix:
 
 Maually installed python in all the ec2
+
 Application is running but issue with application and DB connection
