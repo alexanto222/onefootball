@@ -18,26 +18,31 @@
        - sensu
        - uchiwa
 
-   - name: Key and Repo setup
-     shell: curl -s http://www.rabbitmq.com/rabbitmq-signing-key-public.asc | apt-key add - ; echo "deb http://www.rabbitmq.com/debian/ testing main" > /etc/apt/sources.list.d/rabbitmq.list;curl -s http://repos.sensuapp.org/apt/pubkey.gpg | apt-key add - ;echo "deb http://repos.sensuapp.org/apt sensu main" > /etc/apt/sources.list.d/sensu.list ; echo "deb http://packages.elasticsearch.org/elasticsearch/1.0/debian stable main" > /etc/apt/sources.list.d/elasticsearch.list
+   - name: Key and Repo setup rabbitmq
+
+     shell: curl -s http://www.rabbitmq.com/rabbitmq-signing-key-public.asc | apt-key add - ; echo "deb http://www.rabbitmq.com/debian/ testing main" > /etc/apt/sources.list.d/rabbitmq.list
+   - name: key and repo sensuapp
+     shell: curl -s http://repos.sensuapp.org/apt/pubkey.gpg | apt-key add - ; echo "deb http://repos.sensuapp.org/apt sensu main" > /etc/apt/sources.list.d/sensu.list 
+   - name: key and repo elastic search
+     shell: curl -s http://packages.elasticsearch.org/GPG-KEY-elasticsearch | apt-key add -; echo "deb http://packages.elasticsearch.org/elasticsearch/1.0/debian stable main" > /etc/apt/sources.list.d/elasticsearch.list
 
    - name: Run the equivalent of "apt-get update"
-     apt:
-       update_cache: yes
+     shell: apt-get update    
 
-   - name: Install erlang-nox,rabbitmq-server,
-     apt: name={{ item }} state=installed update_cache=yes
-     with_items:
-      - erlang-nox
-      - rabbitmq-server
-      - redis-server
+   - name: Install erlang-nox,rabbitmq-server,redis
+#     apt: name={{ item }} state=installed 
+#     with_items:
+#       - erlang-nox
+#       - rabbitmq-server
+#       - redis-server
+     shell: apt-get install -y erlang-nox ; apt-get install -y rabbitmq-server ; apt-get install -y redis-server
 
    - name: configure rabbitmq
      shell: rabbitmqctl add_vhost /sensu ; rabbitmqctl add_user sensu monitor ; rabbitmqctl set_permissions -p /sensu sensu ".*" ".*" ".*" ;update-rc.d sensu-server defaults; update-rc.d sensu-client defaults; update-rc.d sensu-api defaults; update-rc.d uchiwa defaults
 
    - name: copy the config files
-     copy:
-      src: "{{ item }}"
+     template:
+      src: /root/onefootball/sensu/{{ item }}
       dest: /etc/sensu/conf.d/{{ item }}
       remote_src: yes   
      with_items:
@@ -54,7 +59,7 @@
      shell: /usr/bin/sensu-install -p disk-checks ; /usr/bin/sensu-install -p memory-checks ; /usr/bin/sensu-install -p load-checks
 
    - name: start the services
-     service: name={{ item }} state=start
+     service: name={{ item }} state=started
      with_items:
        - sensu-server
        - sensu-client
