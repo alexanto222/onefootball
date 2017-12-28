@@ -19,5 +19,6 @@ Clone the repository
 - Move to all the individual directory and Execute the below command
 - vagrant up
 
-UCHIWA dashboard for monitoring eg: http://<IPaddress>:3000
+UCHIWA dashboard for monitoring eg: http://IPaddress:3000
+  
 Blue print webapp http://localhost(IP)
