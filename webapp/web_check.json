@@ -1,0 +1,12 @@
+{
+      "checks": {
+        "check_url": {
+         "command": "/opt/sensu/embedded/bin/check-http.rb -u http://localhost",
+      "interval": 60,
+      "occurrences": 5,
+      "standalone": true,
+      "subscribers": [ "url" ],
+      "environment": ":::environment|development:::"
+        }
+      }
+}
