@@ -1,0 +1,26 @@
+Welcome to the Onefootball DevOps Challenge
+
+Introduction
+Onefootball is an app enabling football fans to get their daily dose of news and scores wherever they are, created by a team of professionals from 25 different countries. We stay up-to-date on the latest technology and incorporate it into our app! We do all this to create the best user experience for millions of football fans around the world. But we can’t do it alone – we’re always looking for new talent to join our team and would love to hear from you!
+
+You…
+enjoy working in Linux and open source environments.
+are familiar with virtualisation systems like EC2, FreeBSD Jail, Vagrant and cloud platforms.
+You have strong experience with Amazon Web Services, in particular EC2, VPC, RDS, Route53 and a good knowledge of the overall AWS service portfolio.
+have knowledge in large datasets using databases including SQL and NoSQL flavours.
+have a thorough understanding of the technologies behind the Internet.
+are able to design and support robust systems, for multi-tier web applications - as exampleNginx, MySQL, Redis, Vagrant.
+have experience with infrastructure as code technologies, for example, Saltstack, Ansible.
+are able to support a software delivery pipeline from continuous integration to automated deployment - like Buildbot / Travis.
+know shell scripting and/or dynamic languages (Python, bash, tcsh).
+are an good communicator, and believe in working collaboratively.
+have a software development and operations background.
+What you'll do…
+contribute to improving the development and operational systems and processes.
+pair with teammates and developers to share knowledge, best practices, and collaboratively improve our platform.
+configure the software which forms the foundation of our online platform, and use automation to ensure our processes are repeatable and scalable.
+keep up to date with emerging technologies to ensure the right tools are used for the job.
+take an active role in finding the root cause of operational issues, and prevent them from reoccurring.
+promote our DevOps practices within the company.
+strive to create an environment where developers and operations staff can work in mutually-supportive collaboration.
+so lets get started =]
